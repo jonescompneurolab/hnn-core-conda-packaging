@@ -1,0 +1,79 @@
+{% set name = "hnn-core" %}
+{% set version = "0.4.1" %}
+{% set build_number = 0 %}
+
+{% set python_inclusive_min = "3.12" %}
+{% set python_exclusive_max = "3.13" %}
+
+package:
+  name: "hnn-core-all"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/hnn_core-{{ version }}.tar.gz"
+  sha256: 50c8ec5eea289b23e38b8f2be5643d117c13552a179d5eb7efd3d64224c9e537
+
+build:
+  skip: true  # [py<312 or py>313 or win or aarch64]
+  entry_points:
+    - hnn-gui=hnn_core.gui.gui:launch
+  number: {{ build_number }}
+
+requirements:
+  host:
+    - python >={{ python_inclusive_min }},<{{ python_exclusive_max }}
+    - find-libpython
+    - mpi4py
+    - ncurses >=6.5,<7.0a0
+    - numpy >=1.19,<2
+    - openmpi >=5.0.5,<6.0a0
+    - pip
+    - readline >=8.2,<9.0a0
+    - setuptools >=40.8.0
+  run:
+    - python >={{ python_inclusive_min }},<{{ python_exclusive_max }}
+    - find-libpython
+    - h5io
+    - ipykernel
+    - ipympl
+    - ipython
+    - ipywidgets >8.0.0
+    - joblib
+    - matplotlib-base >=3.5.3
+    - mpi4py
+    - ncurses >=6.5,<7.0a0
+    - numpy >=1.19,<2
+    - openmpi >=5.0.5,<6.0a0
+    - psutil
+    - readline >=8.2,<9.0a0
+    - scikit-learn
+    - scipy
+    - voila
+
+test:
+  imports:
+    - hnn_core
+  commands:
+    - pip check
+    - hnn-gui --help
+  requires:
+    - pip
+
+about:
+  home: https://hnn.brown.edu
+  license: BSD 3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  license_url: https://github.com/jonescompneurolab/hnn-core/blob/master/LICENSE
+  summary: HNN-Core install (all features) for cortical simulation with NEURON
+  description: |
+    This package provides the API and all features of the Human Neocortical Neurosolver (HNN-Core),
+    which enables biophysical simulations of cortical columns and their EEG/MEG-related electric
+    currents using NEURON. Note that this package MUST be installed with the conda-forge channel as
+    well, such as using "conda install hnn-core-all -c jonescompneurolab -c conda-forge".
+  dev_url: https://github.com/jonescompneurolab/hnn-core
+  doc_url: https://jonescompneurolab.github.io/hnn-core/stable/index.html
+
+extra:
+  recipe-maintainers:
+    - asoplata
