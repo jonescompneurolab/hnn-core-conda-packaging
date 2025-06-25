@@ -1,5 +1,5 @@
 {% set name = "hnn-core" %}
-{% set version = "0.4.1" %}
+{% set version = "0.4.2" %}
 {% set build_number = 0 %}
 
 {% set python_inclusive_min = "3.12" %}
@@ -11,7 +11,7 @@ package:
 
 source:
   url: "https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/hnn_core-{{ version }}.tar.gz"
-  sha256: 50c8ec5eea289b23e38b8f2be5643d117c13552a179d5eb7efd3d64224c9e537
+  sha256: c0df8164075814e4f5021ce5e2717b155fddcff5ba8db543dea38ff17e3a8d12
 
 build:
   skip: true  # [py<312 or py>313 or win or aarch64]
@@ -26,7 +26,7 @@ requirements:
     - pip
     - setuptools >=40.8.0
     - ncurses >=6.5,<7.0a0
-    - numpy >=1.19,<2
+    - numpy >=1.19
     - readline >=8.2,<9.0a0
   run:
     - python >={{ python_inclusive_min }},<{{ python_exclusive_max }}
@@ -36,7 +36,7 @@ requirements:
     - psutil
     - scipy
     - ncurses >=6.5,<7.0a0
-    - numpy >=1.19,<2
+    - numpy >=1.19
     - readline >=8.2,<9.0a0
 
 test:
