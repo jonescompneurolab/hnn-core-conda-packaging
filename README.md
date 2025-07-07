@@ -2,10 +2,9 @@
 
 This repo has all the code and metadata you need to **build** the Conda packages for [`hnn-core`](https://github.com/jonescompneurolab/hnn-core). These
 packages (`hnn-core-all` and `hnn-core`) should be remade and uploaded every time there is a new
-version release. Note that currently, this is still a very "manual" process. This is for developers
-building our Conda package -- if you are just trying to *install* the HNN-Core Conda package, then
-please see our [Installation Guide
-here](https://jonescompneurolab.github.io/hnn-core/stable/install.html).
+version release. Note that currently, this is still a very "manual" process. 
+
+Note that this repo is for developers building our Conda package -- if you are just trying to *install* the HNN-Core Conda package, then please see our [Installation Guide here](https://jonescompneurolab.github.io/hnn-core/stable/install.html).
 
 This repo is based off of discussion in https://github.com/jonescompneurolab/hnn-core/issues/950 .
 
