@@ -1,21 +1,29 @@
 # hnn-core-conda-packaging
 
-This repo has all the code and metadata you need to **build** the Conda packages for [`hnn-core`](https://github.com/jonescompneurolab/hnn-core). These
-packages (`hnn-core-all` and `hnn-core`) should be remade and uploaded every time there is a new
-version release. Note that currently, this is still a very "manual" process.
+This repo has all the code and metadata you need to **build** the Conda package for
+[`hnn-core`](https://github.com/jonescompneurolab/hnn-core). This package,
+`hnn-core-all`, should be remade and uploaded every time there is a new version
+release. Note that currently, this is still a very "manual" process.
 
-Note that this repo is for developers building our Conda package -- if you are just trying to *install* the HNN-Core Conda package, then please see our [Installation Guide here](https://jonescompneurolab.github.io/hnn-core/stable/install.html).
+Note that this repo is for developers *creating* our Conda package -- if you are just
+trying to *install* the HNN-Core Conda package, then please see our [Installation Guide here][].
 
 This repo is based off of discussion in https://github.com/jonescompneurolab/hnn-core/issues/950 .
 
+You probably got here from [How to create releases][] on our HNN Developer Portal, of which this is a part.
+
 # Summary
 
-### Packages
+### Package
 
-This gives you what you need to build two distinct packages:
+This gives you what you need to build the Conda package:
 
-- `hnn-core`: A Conda package providing the "minimal" version of HNN-Core, that is, ONLY the API. No GUI, no parallelism, nothin'! This is what has been uploaded to produce https://anaconda.org/jonescompneurolab/hnn-core .
 - `hnn-core-all`: A Conda package providing a "maximal" version of HNN-Core, with ALL user-facing features enabled (i.e. those for `gui`, `opt`, and both MPI and Joblib `parallelism`, but not `docs` or `testing`). This is what has been uploaded to produce https://anaconda.org/jonescompneurolab/hnn-core-all .
+
+- This repo also houses the code for a deprecated, no-longer-used second package, `hnn-core`: A Conda package providing the "minimal" version of HNN-Core, that is, ONLY the API. No GUI, no parallelism, nothin'! The code is stored in `archaic/hnn-core` and is built the same way as `hnn-core-all`. However, eventually it was determined that this just served to confuse users, as
+    1. they are unlikely to *not* need the GUI, especially if they are new to HNN,
+    2. it still forces the user to make a choice about what features they need, before they understand what the features are, and
+    3. a "minimal" install will always be possible with the Pip package installation.
 
 ### Supported platforms
 
@@ -85,8 +93,6 @@ Assuming all your testing works, you should be done with package delivery of `hn
 
 11. Now, you get to do it all over again! Assuming you have built `hnn-core-all` for one of the three [Supported platforms](#supported-platforms), you should now do it for the remaining ones. Currently, this requires you to use a computer that HAS that platform. However, in the future, using CI runners (e.g. via Github Actions) will enable a way to do that without requiring you to have physical access to such a platform.
 
-12. Now, you get to do it all over again, AGAIN! Repeat the above steps, except doing them for the package in the `./hnn-core` subdirectory, rather than the `./hnn-core-all` subdirectory. Since `hnn-core` is a subset of `hnn-core-all`, there should be no bugs in the build process for `hnn-core` that aren't first discovered when building `hnn-core-all`. You will instead be dealing with a similarly named package-file, for example like `$CONDA_PREFIX/conda-bld/linux-64/hnn-core-0.4.1-py312_0.conda`.
-
 # How to install your built package
 
 ### Local install:
@@ -94,34 +100,32 @@ Assuming all your testing works, you should be done with package delivery of `hn
 Assuming you have built your package into the default `conda build` building directory (i.e. `$CONDA_PREFIX/conda-bld`) by using the scripts provided in this repo, your newly-built package(s) should be there. However, Conda's package management has some strong opinions, and one of those is that you don't install the package by just passing in the file name. Instead, it treats locally-built packages using the "channel name" `local` (see https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/channels.html ). This means that to install your local package, Conda needs not just the package-file itself, but also *metadata* about it in nearby files that it knows about; you have to provide this by telling it to use the `local` "channel" in addition to its `default` channel. Additionally, because HNN-Core depends on versions of OpenMPI only available on `conda-forge` (and we build it with them), you are REQUIRED to also provide the `conda-forge` channel as well. Thus, the way you install your locally-built package is the following command:
 
 ```
-conda install <package-name> -c local -c conda-forge
+conda install hnn-core-all -c local -c conda-forge
 ```
 
-where `<package-name>` is either `hnn-core-all` or `hnn-core`. Once you've done that, you're ready to test it however you like.
+Once you've done that, you're ready to test it however you like.
 
 ### Install from another computer:
 
 Actually testing that a package-file you built on one computer works on a different computer of the same platform is requires only a few extra steps.
 
-1. First, download the `<stuff>.conda` file from the other computer to your local one. For example, its location on the other computer might be `$CONDA_PREFIX/conda-bld/linux-64/hnn-core-0.4.1-py312_0.conda`. On your local computer download it to the corresponding directory at `$CONDA_PREFIX/conda-bld/<platform>`. For example, I might have to first `mkdir -p $CONDA_PREFIX/conda-bld/linux-64` to create the directory path, and then I would copy the actual `<stuff>.conda` file into that directory.
+1. First, download the `<stuff>.conda` file from the other computer to your local one. For example, its location on the other computer might be `$CONDA_PREFIX/conda-bld/linux-64/hnn-core-all-0.4.1-py312_0.conda`. On your local computer download it to the corresponding directory at `$CONDA_PREFIX/conda-bld/<platform>`. For example, I might have to first `mkdir -p $CONDA_PREFIX/conda-bld/linux-64` to create the directory path, and then I would copy the actual `<stuff>.conda` file into that directory.
 
 2. Next, you need to "index" the directory that you put the new `<platform>/<stuff>.conda` into, so that Conda knows about and can both find it and treat it as part of your `local` channel. For this, you can run `conda index $CONDA_PREFIX/conda-bld`. You may have to `conda install conda-index` if you haven't run `./00-install-build-deps.sh` locally.
 
-3. Once you've done that, you should be able to install the downloaded package using `conda install <package-name> -c local -c conda-forge` just like above in the local case.
+3. Once you've done that, you should be able to install the downloaded package using `conda install hnn-core-all -c local -c conda-forge` just like above in the local case.
 
 ### Install from the cloud:
 
 Once you've uploaded the package-file to the `anaconda.org` cloud, you can easily download it for testing by replacing our prior use of the `local` channel with the channel of our Organization on anaconda.org, which is the same name as our Github Org (`jonescompneurolab`). That is, you can do the following:
 
 ```
-conda install <package-name> -c jonescompneurolab -c conda-forge
+conda install hnn-core-all -c jonescompneurolab -c conda-forge
 ```
-
-where `<package-name>` is either `hnn-core-all` or `hnn-core`.
 
 # Details and caveats for building
 
-Let's walk through what's going on if you're using `./hnn-core-all/01-build-pkg.sh` to try to build the more complex package, `hnn-core-all`.
+Let's walk through what's going on if you're using `./hnn-core-all/01-build-pkg.sh` to try to build the package `hnn-core-all`.
 
 In `01-build-pkg.sh`, the "top-level" package building script, there's really only one line of execution: essentially `conda-build recipe -c defaults -c conda-forge`. Linux requires an extra argument (only if you are building on a system where your main partition is encrypted...which it should be if it's your personal computer!), details on that are documented in comments in the script. The only other caveat here is that we *need* to indicate we want to use BOTH the `defaults` and `conda-forge` channels. As of 20250513, if you try to only use `conda-forge`, there is a file conflict between two dependency packages we need (see [Future work](#future-work)).
 
@@ -158,7 +162,7 @@ source:
 
 Here, you can clearly see that there is a `package: name: "hnn-core-all"` key-value. This is the one that "matters" and decides the name of the package.
 
-For `source`: Even though the Conda packaging ecosystem tries to be as independent from the PyPI ecosystem (more on that soon), it is common for the source code of the root package to be downloaded from PyPI. We could also use Git or other methods as well, but using straight from PyPI is preferred. Note that currently, the URL of our PyPI distributable uses a combination of `hnn-core` (with a hyphen) as the package name, but the distributable filename itself uses `hnn_core` (with an underscore). This is partly a result of the filename output by our PyPI package release process (see https://github.com/jonescompneurolab/hnn-core/wiki/How-to-make-a-release ).
+For `source`: Even though the Conda packaging ecosystem tries to be as independent from the PyPI ecosystem (more on that soon), it is common for the source code of the root package to be downloaded from PyPI. We could also use Git or other methods as well, but using straight from PyPI is preferred. Note that currently, the URL of our PyPI distributable uses a combination of `hnn-core` (with a hyphen) as the package name, but the distributable filename itself uses `hnn_core` (with an underscore). This is partly a result of the filename output by our PyPI package release process (see [How to create releases][]).
 
 ```yaml
 build:
@@ -293,6 +297,12 @@ These are replacement `conda activate/deactivate` scripts for the old `echo "exp
 If you've read this far, then you've probably realized there's **significant** room for improvements.
 
 - Top priority: Removing the need to build locally. Ideally, we should make movements towards how `conda-forge` does it by building the actual package-files using CI runners: see the diagram at https://conda-forge.org/docs/maintainer/understanding_conda_forge/feedstocks/ . We could start by doing this using Github Actions. I don't know where the final package-files would end up (maybe as Releases? or just copied into the repo itself?).
+
 - Relatedly, if we did start building our packages-files from CI, I would be wary and of any automatic pushes to `anaconda.org` directly, at least until provide more consistent testing. Part of this testing should be `hnn-core`'s actual tests themselves! Currently, using `hnn-core`'s tests on an install that is NOT a local-source-install is difficult, and would probably require code changes.
+
 - Another future goal is to transition to providing HNN-Core conda packages via the `conda-forge` community system, instead of pushing specific package-files directly to `anaconda.org` as we currently do. This requires more work: https://conda-forge.org/docs/maintainer/adding_pkgs/ . We would need to work with the `conda-forge` community and eventual become maintainers of a "feedstock" repo, after adapting our build process to do things the `conda-forge` way. Their way is very different than ours: the feedstock repo is just the recipe + metadata, and ALL building is done through CI orchestration. This is made more complicated due to our very weird, platform-and-architecture-specific NEURON wheel dependency.
+
 - There is currently a "clobber" aka "file clash" if you try to build the package using ONLY the `conda-forge` channel in `01-build-pkg.sh` (as opposed to using both `defaults` and `conda-forge` like we currently do). By clobber, what I mean is that two different dependency packages both try to provide their own version of a certain shared library binary file; this leads to an error at pre-build-time. In other words, there is a problem with our dependency tree if we strictly use packages from the `conda-forge` channel. I've gotten around this for now by forcing our build to use BOTH the `defaults` and `conda-forge` channel, but it could result in other problems down the line, since we are mixing-and-matching packages from two very different channels. In general, the packages in `defaults` tend to be stable but much older, while the `conda-forge` packages tend to be much newer but also less stable (the classic software-package-management problem).
+
+[Installation Guide here]: https://jonescompneurolab.github.io/textbook/content/01_getting_started/installation.html
+[How to create releases]: https://jonescompneurolab.github.io/hnn-core/dev/how_to_create_releases.html
