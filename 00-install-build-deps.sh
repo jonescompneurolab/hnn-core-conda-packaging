@@ -6,4 +6,4 @@ echo $'You only need to run this script once.'
 echo $'\nSee https://docs.conda.io/projects/conda-build/en/stable/install-conda-build.html for more details.'
 
 conda activate base
-conda install -y -q conda-build conda-verify
+conda install -y -q conda-build
