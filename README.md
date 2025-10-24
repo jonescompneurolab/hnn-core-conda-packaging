@@ -64,7 +64,7 @@ Currently, these packages are ONLY built for Python 3.12 specifically. Since the
 ```
 conda create -y -q -n test python=3.12
 conda activate test
-conda install hnn-core-all -c local -c conda-forge  # Run this line exactly how it is!
+conda install hnn-core-all -c local -c conda-forge
 ```
 
 8. Test it!
@@ -87,7 +87,7 @@ anaconda upload --force --user jonescompneurolab $CONDA_PREFIX/conda-bld/osx-arm
 ```
 conda create -y -q -n test python=3.12
 conda activate test
-conda install hnn-core-all -c jonescompneurolab -c conda-forge  # Run this line exactly how it is!
+conda install hnn-core-all -c jonescompneurolab -c conda-forge
 ```
 Assuming all your testing works, you should be done with package delivery of `hnn-core-all` for your local platform.
 
