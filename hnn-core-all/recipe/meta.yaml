@@ -32,6 +32,7 @@ requirements:
     - setuptools >=40.8.0
   run:
     - python >={{ python_inclusive_min }},<{{ python_exclusive_max }}
+    - cma
     - find-libpython
     - h5io
     - ipykernel
