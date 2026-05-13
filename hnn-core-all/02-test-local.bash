@@ -11,7 +11,10 @@ printf "\n-------------------------------------------"
 printf "\n--> Setting up conda env and loading prereqs..."
 printf "\n-------------------------------------------\n"
 
-eval "$(/opt/anaconda3/bin/conda shell.bash hook)"
+if [ `uname` == Darwin ]; then
+    eval "$(/opt/anaconda3/bin/conda shell.bash hook)"
+elif [ `uname` == Linux ]; then
+    eval "$(~/anaconda3/bin/conda shell.bash hook)"
 
 conda activate base
 if conda env list | awk '{print $1}' | grep -qx "$ENV_NAME"; then
