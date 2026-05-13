@@ -59,19 +59,9 @@ Currently, these packages are ONLY built for Python 3.12 specifically. Since the
     4. TIP: if you ever want to clean your build environment (e.g. after a bad build didn't finish), run `conda build purge-all`.
     5. TIP: I can attest, it *is* possible to break your Conda install *as a whole* by doing certain actions. E.g., renaming a package `*.conda` file to a different name, then trying to install it locally. This seems to break some kind of Conda-wide metadata configuration and makes it impossible to install packages into existing environments. So uhh don't do that (or else the easiest way to deal with it is to just fully delete and reinstall Conda entirely).
 
-7. Next, create a new environment and install your locally-built package using something like the following:
+7. Next, test your local build by running `./02-test-local.bash` from inside `hnn-core-all`. This will run some basic checks, then spawn the GUI for you to check, then make a temporary copy of the tests from the appropriately-located source code (see the script for details) and run the tests. Currently, at least one of the tests will fail due to hard requirements by certain tests on local filenames (you'll see `FileNotFoundError` in the test output), but aside from that, the vast majority of the tests should pass if everything is good.
 
-```
-conda create -y -q -n test python=3.12
-conda activate test
-conda install hnn-core-all -c local -c conda-forge
-```
-
-8. Test it!
-    1. Then, run some test sims like with `hnn-gui` or whatever, and MAKE SURE to test that MPI parallelism works. Also test that Optimization works, by, for example, making sure that this script https://github.com/jonescompneurolab/hnn-core/blob/master/examples/howto/optimize_evoked.py at least successfully starts running the second iteration. You could also copy and run the tests locally, such as by downloading https://github.com/jonescompneurolab/hnn-core/tree/master/hnn_core/tests , installing `pip install pytest`, then running `pytest .`
-    2. If possible, try running the new package-file on another computer of the same platform. See [How to install your built package](#how-to-install-your-built-package) below for how to do that (it's a little weird).
-
-9. Finally, once you're satisfied that the package works, it's time to upload it. You will be uploading it from the command line, similar to how we've uploaded to PyPI in the past.
+8. Finally, once you're satisfied that the package works, it's time to upload it. You will be uploading it from the command line, similar to how we've uploaded to PyPI in the past.
     1. If you haven't already, make an account on [anaconda.org](https://anaconda.org), and get your user account added to the [jonescompneurolab Organization](https://anaconda.org/jonescompneurolab) for permissions (ask @asoplata for access). WARNING: Note that you need an account on "anaconda dot ORG", not "dot COM" or "dot CLOUD"! Anaconda has many websites and you need to use [anaconda.org](https://anaconda.org). The different websites do not necessarily talk to each other!
     2. In your terminal run the command `anaconda login`. Note that this uses `anaconda` and not just `conda`! Also, if it complains that it doesn't have the command, you may need to `conda install anaconda-client`.
     3. You should now be ready to upload. Remember that "package-file" I specifically mentioned before? You need to upload that, but for the Organization, not your personal account. The example command I used to upload it is this:
@@ -83,15 +73,9 @@ Note that you will probably have to change the platform-specific directory name,
 anaconda upload --force --user jonescompneurolab $CONDA_PREFIX/conda-bld/osx-arm64/hnn-core-all-0.4.1-py312_0.conda
 ```
 
-10. Almost done: just to be safe, you should also test that the online version of the file works too. Depending on how soon Anaconda provides the newly uploaded package (usually instantly), do the following:
-```
-conda create -y -q -n test python=3.12
-conda activate test
-conda install hnn-core-all -c jonescompneurolab -c conda-forge
-```
-Assuming all your testing works, you should be done with package delivery of `hnn-core-all` for your local platform.
+9. Almost done: just to be safe, you should also test that the online version of the file works too. Depending on how soon Anaconda provides the newly uploaded package (usually instantly), run the script `./03-test-download.bash`, which repeats the same tests as the other testing script, but for a copy of the package downloaded from Anaconda.
 
-11. Now, you get to do it all over again! Assuming you have built `hnn-core-all` for one of the three [Supported platforms](#supported-platforms), you should now do it for the remaining ones. Currently, this requires you to use a computer that HAS that platform. However, in the future, using CI runners (e.g. via Github Actions) will enable a way to do that without requiring you to have physical access to such a platform.
+10. Now, you get to do it all over again! Assuming you have built `hnn-core-all` for one of the three [Supported platforms](#supported-platforms), you should now do it for the remaining ones. Currently, this requires you to use a computer that HAS that platform. However, in the future, using CI runners (e.g. via Github Actions) will enable a way to do that without requiring you to have physical access to such a platform.
 
 # How to install your built package
 
