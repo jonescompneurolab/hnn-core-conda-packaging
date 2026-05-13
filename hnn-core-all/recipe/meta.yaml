@@ -1,5 +1,5 @@
 {% set name = "hnn-core" %}
-{% set version = "0.6.0" %}
+{% set version = "0.6.1" %}
 {% set build_number = 0 %}
 
 {% set python_inclusive_min = "3.12" %}
@@ -11,7 +11,7 @@ package:
 
 source:
   url: "https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/hnn_core-{{ version }}.tar.gz"
-  sha256: 262806512940f55d43fc73e72e40cc6f744c02af7b6ec1c957e505c3be3220c2
+  sha256: 5a4bc9087de0fccfd52556213973d240b89323fc06d78d25e498d987679ec7be
 
 build:
   skip: true  # [py<312 or py>313 or win or aarch64]
